@@ -18,3 +18,22 @@ SessionLocal = sessionmaker(
 # no api can call the DTQ (database transaction query) on  their own
 
 Base = declarative_base() # ill inherit this for models
+
+#for proning exeptions from too many session calls at once , lets introduce getdb
+
+def get_db():
+    db = SessionLocal()
+    yield db
+    db.close()
+
+'''
+soo how does this get_db work ?
+well its simple than it looks , basically , when we call it inside a route function as we need sessionlocal
+to operate the database , we will instead call this function , store the get_db returning value , use it , 
+and once done , function ends , then the yield statement is over , and db.close() executes 
+
+in more simple words , yield will return thing , and pause the get_db function until the route function
+ends and once it ends , code after yield works.
+
+this is such a beautiful application of yield , great to understand.
+'''   
