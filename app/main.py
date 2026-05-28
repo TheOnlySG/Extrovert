@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from app.db.database import SessionLocal , engine , Base
-from app.db.models.user import User
+from app.db.database import  engine , Base
 from app.api.routes.user import router
 
 

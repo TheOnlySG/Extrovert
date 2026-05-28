@@ -15,7 +15,7 @@ class User(Base):
     id  = Column(Integer , primary_key=True)
     username = Column(String(50) , nullable=False , unique=True)
     email = Column(String(255) , nullable=False , unique=True)
-    password =  Column(String , nullable=False)
+    password_hash =  Column(String , nullable=False)
     created_at = Column(
         DateTime(timezone=True) , #means timezone awared timestamps
         default=lambda:datetime.now(timezone.utc) #get current time from UTC timezone

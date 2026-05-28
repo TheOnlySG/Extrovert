@@ -3,6 +3,8 @@ from app.db.database import  get_db
 from app.db.models.user import User
 from app.schemas.user import UserCreate
 from sqlalchemy.orm import Session
+
+from app.core.security import hash_password
 '''
 whats this api router btw ? this is something that allows fastapi to modernize the backend structure.
 traditionally we stuff all routes in main.py or app.py right ? the apirouter allows you to spread your routes
@@ -30,7 +32,7 @@ def user_sign_up(
     new_user = User(
         username = person.username,
         email = person.email,
-        password = person.password
+        password_hash = hash_password(person.password)
     ) # now this is an object of our orm , means this has database like structure
 
     # now we have a user , and we can push it straight to database , and how we do that ? with orm !

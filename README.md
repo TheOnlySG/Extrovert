@@ -51,3 +51,45 @@ check schemas folder for **validation** model
 
 sqlalchemy -> database structure
 pydantic -> api input output structure
+
+
+great now we have a dummy user storage model . wait , why did i call it dummy ? 
+well we cant directly store passwords in database , right ? that will probably make
+security vernareble if some of the data leaks , passwords are exposed.
+solution - we use password hashing , and for that we use passlib[bycrypt]
+
+let me break the wroking of it .
+say our password is -- and our password hashed string is --
+password123 => $2b$12$asdasdjasd...
+and now we compare hashed strings. match ? return from server the required page !
+
+bycrypt is a password hashing algorithm , not encription btw , both are different,
+
+in bycryption , you cant reverse your password , means
+once the password got hashed , you cant convert the hashing back to password.
+example : 
+password123 => $2b$12$asdasdjasd... , now this hashed thing cant be converted back to password
+
+but , encryption is reversible.it is used for messeging , files etc.
+
+also , deep down bycryption hashing is broken into fast hashing and slow hashing , 
+fast hashing -> fast and quick hashed password. 
+slow hashing -> slow but reliable and perfect hashed password.
+
+hackers can try millions of password per sec to break a fast hashed password , but slow hashed cant be done
+
+also , it uses salt , now wth is salt ? 
+well if another user enters same password , then their hash wont be same.
+
+
+alr enough explaination
+so i have now updated the users.py from both db and api.routes . Thus , both validation model and
+orm model are updated and yeah , "same synced" if we keep it simple.
+
+NOW NOW NOW , earlier the postgres table stored password,  butnow , the table stores password_hash.
+fair. but the table now alter exists and our sqlalchemy cant update an existing table. 
+sooo here , a concept is introduced called migration , (well i pretty much understood the core
+why, what , where for migration)
+we would be using alembic for doing so btw. 
+**BUT**
+not now , for now i am simply dropping table from postgres manually.
