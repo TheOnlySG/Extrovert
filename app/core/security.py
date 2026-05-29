@@ -8,9 +8,9 @@ to be thin. soo yeah
 
 from passlib.context import CryptContext #this object manages hashing algos
 from datetime import datetime , timedelta , timezone
-from jose import jwt
+from jose import jwt , JWTError
 from app.core.config import ALGORITHM , SECRET_KEY
-
+from fastapi.exceptions import HTTPException
 
 
 #object that will store context for our hash func
@@ -45,6 +45,32 @@ def create_access_token(user_id , expires_in_minutes = 30):
         key=SECRET_KEY,
         algorithm=ALGORITHM
     )
-    
-    
     return access_token
+
+#now that the jwt token is generated we need to verify it in cases where we need to return the user
+#thus this function will handle decoding , from token -> userid with proper auth checking
+
+def verify_access_token(token):
+    
+    try : 
+        payload = jwt.decode(
+            token=token,
+            key=SECRET_KEY,
+            algorithms=[ALGORITHM]
+        ) #this checks everything --> token expiration , token validation , correct/invalid , signature
+        #if somthing mismatches , gives jwtError , so we handled it below
+        
+        user_id = payload.get('sub' , None)
+        
+        if user_id is None:
+            raise HTTPException(
+                status_code=401 ,
+                detail='invalid token'
+            )
+        
+        return int(user_id)
+    except JWTError: #so basically , jwt.decode gives an error , if the token is invalid , or expired or anything , that is jwterror , and we handled it as a httpexception
+        raise HTTPException(
+            status_code=401 ,
+            detail='invalid token'
+        )

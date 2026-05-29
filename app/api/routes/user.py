@@ -7,8 +7,14 @@ from sqlalchemy.orm import Session
 from fastapi.exceptions import HTTPException
 from app.core.security import create_access_token
 
+from app.api.dependencies.auth import get_current_user
+
 from app.core.security import verify_password
 from app.core.security import hash_password
+
+
+
+# from app.core.security import verify_access_token
 '''
 whats this api router btw ? this is something that allows fastapi to modernize the backend structure.
 traditionally we stuff all routes in main.py or app.py right ? the apirouter allows you to spread your routes
@@ -85,3 +91,10 @@ def user_login(person : UserLogin , db :Session = Depends(get_db)):
     else:
         raise HTTPException(status_code=401 , detail='invalid credentials')
         
+
+
+@router.get('/me' , response_model=UserResponse)
+def me(
+    current_user : User = Depends(get_current_user)
+):
+    return current_user

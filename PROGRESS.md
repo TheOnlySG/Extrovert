@@ -149,6 +149,12 @@ basically the data which we wanna share and expose to frontend through backend ,
 
 ALR jwt implementation done.
 current jwt structure is {
-    access_token : 'hashedPayload.hashedsecretkey.algorithm'
-    
+    access_token : 'header.payload.key'
+    token_tyle : bearer
 }
+
+now , i have also imnplementd a verification function in security whigch verifies the jwt
+we will use that when we recieve token from frontend, if it verifies successfully then we proceed
+
+now , where do we find  jwt ? we will find it in url header of the page , to take that ill
+probably use inbuilt fastapis oauth2passwordberer
