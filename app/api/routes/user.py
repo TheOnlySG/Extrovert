@@ -1,9 +1,13 @@
 from fastapi import APIRouter , Depends
 from app.db.database import  get_db
 from app.db.models.user import User
-from app.schemas.user import UserCreate , UserResponse
+from app.schemas.user import UserCreate , UserResponse , UserLogin , Token
 from sqlalchemy.orm import Session
 
+from fastapi.exceptions import HTTPException
+from app.core.security import create_access_token
+
+from app.core.security import verify_password
 from app.core.security import hash_password
 '''
 whats this api router btw ? this is something that allows fastapi to modernize the backend structure.
@@ -57,3 +61,27 @@ def user_sign_up(
 
 
     return new_user  #now to return this , fastapi will convert orm to json and send the new_user data
+
+
+#lets handle login now , as signup is done.
+@router.post('/login' , response_model=Token)
+def user_login(person : UserLogin , db :Session = Depends(get_db)):
+    login_user = db.query(User).filter( #passed the orm model User btw from db/user.py , smth like select * from user
+        User.email == person.email #smth like select * from users where email = person.email
+    ).first()
+    '''
+    we could have left the query here , but that will return an empty thing like [] if user dsnt exist
+    . if we use .first() it will return email if it exists , and None if it dsnt
+    '''
+    if login_user and verify_password(person.password , login_user.password_hash):
+        access_token = create_access_token(login_user.id) #now we got the token !
+        
+        token = {
+            'access_token' : access_token,
+            'token_type' : 'bearer'
+        }
+
+        return token
+    else:
+        raise HTTPException(status_code=401 , detail='invalid credentials')
+        

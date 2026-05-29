@@ -103,3 +103,52 @@ frontend later , but rn our route is returning some string, lets change it , and
 well we used pydantic to validate right , the UserCreate model , now we create somethinglike a 
 UserResponse thingy , and we will return an objejct of that from api. thus frontend wont be able
 to access any of our password hashes or important things we needed
+
+alr now , we are entering **authentication**
+currently situation ->
+the user signsup , after that ? backend forgets it ! as every request is independent
+
+example.. /signup -> user createde  
+after that /profile -> who are you ?
+
+lets implement the login setup first
+
+alr so in orm , we did db.add(user) through which we added data , now
+how do we fetch data ? , we do db.query(user) , basically means select * from users where "the user
+object variables match the columns values of table"
+
+
+alr now i have handled /login , back to jwt
+
+soo rn our /login route api returns user , which holds id and all details
+great , does our project currently store anything by which we can simply know that yeah this user
+logined ? nope.
+and that is what we gonna solve using JWT(json web token) , basically acts as an id card .
+for that , i have added to new things in .env
+secret key , and an algorithm.
+
+soo what exactly is the secret key ? 
+imagine , a login is done. and backend returned smth like {
+    user : 1
+}
+hackers can easily edit it to user : 909 ? right ? soo secret key acts as a signature.
+it has nothing to do with frontend it just stays as a signature in backend.
+thus
+client sends a jwt token , backend first checks the signature(our secret key) , is it fine ? 
+well great , move ahead.
+thus , frontend will stay disconnected and safe from hackers. they cant directly request data from
+frontend.
+
+soo jwt is more like , proving that this data was issued by our backend and wasent modified.
+what algorithm ?? its basicaaly the algorithm whihc jwt use to generate the signature, there are
+options but we gonna use this one as this generate signature and perfect for our sinario
+we gonna use python-jose and cryptography for jwt ,
+
+whats a payload ? payload is basically the data we wanna carry into our jwt , 
+basically the data which we wanna share and expose to frontend through backend , example user_id
+
+ALR jwt implementation done.
+current jwt structure is {
+    access_token : 'hashedPayload.hashedsecretkey.algorithm'
+    
+}

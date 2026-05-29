@@ -7,6 +7,11 @@ to be thin. soo yeah
 '''
 
 from passlib.context import CryptContext #this object manages hashing algos
+from datetime import datetime , timedelta , timezone
+from jose import jwt
+from app.core.config import ALGORITHM , SECRET_KEY
+
+
 
 #object that will store context for our hash func
 pwd_context = CryptContext(
@@ -22,8 +27,24 @@ def hash_password(password : str):
 #for signup and login , lets implement password verification
 def verify_password(password : str , hashed_password : str):
     return pwd_context.verify(
-        password,
-        hashed_password
+        password, #this would be the password we will recieve from user
+        hashed_password # this parameter uses the hashed thing to extract stored hash , rehashes and compares safely
     )
 #basically , does this hash belong to this password.
 
+
+#alr lets handle the jwt now !
+def create_access_token(user_id , expires_in_minutes = 30):
+    payload = {
+        'sub'  : str(user_id),
+        'exp' : datetime.now(timezone.utc) + timedelta(minutes=expires_in_minutes)
+    }  
+
+    access_token = jwt.encode(
+        payload,
+        key=SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+    
+    
+    return access_token

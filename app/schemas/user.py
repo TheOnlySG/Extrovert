@@ -45,3 +45,17 @@ class UserResponse(BaseModel):
     we will probably add the response model in route.post('/signup' , *HERE*) as an argument so
     api knows what object we returning and molds accordingly
     '''
+
+
+#lets handle userlogin now
+
+class UserLogin(BaseModel):
+    email : EmailStr
+    password : str
+
+
+#jwt token object
+
+class Token(BaseModel):
+    access_token : str
+    token_type : str
