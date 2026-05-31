@@ -19,5 +19,5 @@ app.include_router(post_router)
 @app.get('/')
 def home():
     return {
-        "message" : "currently working on backend , so please check swagger for all apis !"
+        "message" : "currently working on backend , so please check redoc for more info !"
     }

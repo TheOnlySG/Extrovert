@@ -59,3 +59,23 @@ def delete_post(post_id : int , db : Session = Depends(get_db) ,
     return {
         'message' : 'post deleted successfully'
     }
+
+@router.put('/posts/{post_id}' , response_model=PostResponse)
+def update_post(
+    post_id : int ,
+    updated_post : PostCreate,
+    db : Session = Depends(get_db),
+    current_user : User = Depends(get_current_user)
+    ):    
+    current_post = get_post_by_id(post_id , db)
+
+    if current_post.user_id != current_user.id :
+        raise HTTPException(
+            status_code=403,
+            detail="you cannot update another user's post"
+        )
+    current_post.content = updated_post.content
+    db.commit()
+    db.refresh(current_post)
+    
+    return current_post
