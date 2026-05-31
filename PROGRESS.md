@@ -175,3 +175,29 @@ before building , what should a post contain ?
 
 its a one to many or 1:n relationship , and we gonna build that using orm
 soo yeah , this posts.user_id is foreignkey to users.user_id
+
+
+
+
+update : 
+all crud operations on posts rae done.
+
+
+progress :
+AUTH
+Signup
+Login
+JWT
+Protected Routes
+
+POSTS
+Create
+Read All
+Read One
+Update
+Delete
+
+RELATIONSHIPS
+User -> Posts
+Post -> Author
+

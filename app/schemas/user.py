@@ -19,6 +19,18 @@ which the user will enter while registering
 and are important for his profile
 '''
 
+'''
+EDIT : added user mini for author relationship
+importing this to post.py schema in postresponse
+'''
+
+class UserMini(BaseModel):
+    model_config = {
+        'from_attributes' : True
+    }
+    id  :int
+    username : str
+
 
 #class for response
 class UserResponse(BaseModel):

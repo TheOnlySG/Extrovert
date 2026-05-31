@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+from app.schemas.user import UserMini
+
 class PostCreate(BaseModel):
     content  : str #as while creating , user will ofc only send content
 
@@ -15,4 +17,4 @@ class PostResponse(BaseModel):
     id : int
     content : str
     created_at : datetime
-    user_id : int
+    author : UserMini

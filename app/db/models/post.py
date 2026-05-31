@@ -1,5 +1,6 @@
 from app.db.database import Base
-from sqlalchemy import Integer , String , Column ,DateTime , ForeignKey
+from sqlalchemy import Integer , String , Column ,DateTime , ForeignKey 
+from sqlalchemy.orm import relationship
 from datetime import datetime , timezone
 
 
@@ -18,4 +19,9 @@ class Post(Base):
         Integer,
         ForeignKey('users.id'),
         nullable=False
+    )
+
+    author  =relationship(
+        'User',
+        back_populates='posts'
     )
