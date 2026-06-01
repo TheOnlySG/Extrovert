@@ -29,3 +29,10 @@ class User(Base):
         back_populates="author" #tells orom that user.posts -> post.author are 2 sides of relation ship
     )
 
+
+    comments = relationship(
+        'Comment',
+        back_populates='author'
+    )
+
+

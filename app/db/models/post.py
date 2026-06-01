@@ -25,3 +25,8 @@ class Post(Base):
         'User',
         back_populates='posts'
     )
+
+    comments = relationship(
+        'Comment',
+        back_populates='post'
+    )
