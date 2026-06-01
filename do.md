@@ -8,11 +8,11 @@
 6. open postgres in new terminal [psql -U postgres]
 7. create a database called 'socialmedia' [CREATE DATABASE socialmedia]
 8. db setup done , back to python terminal
+9. create a .env file , use template from .env.example , fill your postgres details and secretkey
 
-
-9. install requirements [pip install -r requirements.txt]
-10. run the uvicorn server locally [uvicorn app.main:app --reload]
-11. open port [localhost 8000 mostly]
-12. open swagger [LOCALHOSTURLXYZ/docs]
+10. install requirements [pip install -r requirements.txt]
+11. run the uvicorn server locally [uvicorn app.main:app --reload]
+12. open port [localhost 8000 mostly]
+13. open swagger [LOCALHOSTURLXYZ/docs]
 
 
