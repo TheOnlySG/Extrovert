@@ -30,3 +30,27 @@ class Post(Base):
         'Comment',
         back_populates='post'
     )
+
+    likes = relationship(
+        'Like',
+        back_populates='post'
+    )
+
+    @property
+    def likes_count(self):
+        return len(self.likes)
+    
+    @property
+    def comments_count(self):
+        return len(self.comments)
+    
+
+    '''
+    whats the @property ? 
+    well normally if we do without @property , like this:
+    def like_count(self):
+        return len(self.likes) , it will require us to call post.likes_count() , with () notice
+
+    but if we do it with @property, it will act as a instance variable call , 
+    when we need to call it , we can call it as a variable , like post.likes_count , without ()
+    '''

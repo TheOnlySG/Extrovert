@@ -18,3 +18,5 @@ class PostResponse(BaseModel):
     content : str
     created_at : datetime
     author : UserMini
+    likes_count : int
+    comments_count : int

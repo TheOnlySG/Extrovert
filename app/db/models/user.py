@@ -35,4 +35,9 @@ class User(Base):
         back_populates='author'
     )
 
+    likes = relationship(
+        'Like',
+        back_populates='user'
+    )
+
 
