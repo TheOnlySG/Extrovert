@@ -201,3 +201,9 @@ RELATIONSHIPS
 User -> Posts
 Post -> Author
 
+progress update : implemented complete base social media app and marked it as v0 ,pre release. 
+ill now start writing direct messaging feature , feed system , and then shape it further
+to conversations
+
+
+rn my mind has this , after completing this ill simply go for the product oriented shaping of apis
