@@ -40,4 +40,24 @@ class User(Base):
         back_populates='user'
     )
 
+    following = relationship(
+        'Follow',
+        foreign_keys='Follow.follower_id',
+        back_populates='follower'
+    )
+
+    followers = relationship(
+        'Follow',
+        foreign_keys='Follow.following_id',
+        back_populates='following'
+    )
+
+    @property
+    def followers_count(self):
+        return len(self.followers)
+    
+    @property
+    def following_count(self):
+        return len(self.following)
+
 
