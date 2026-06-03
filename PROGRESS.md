@@ -207,3 +207,36 @@ to conversations
 
 
 rn my mind has this , after completing this ill simply go for the product oriented shaping of apis
+
+
+progress update : these things are implemented now
+
+
+Authentication
+├── Register
+├── Login
+└── JWT
+
+Users
+├── Follow
+└── Unfollow
+
+Posts
+├── Create
+├── Read
+├── Update
+└── Delete
+
+Comments
+├── Create
+├── Read
+├── Update
+└── Delete
+
+Likes
+├── Like
+└── Unlike
+
+Messages
+├── Send
+└── Retrieve conversation

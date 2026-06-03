@@ -61,3 +61,16 @@ class User(Base):
         return len(self.following)
 
 
+    sent_messages = relationship(
+        'Message',
+        foreign_keys='Message.sender_id',
+        back_populates='sender'
+    )
+
+    received_messages = relationship(
+        'Message',
+        foreign_keys='Message.receiver_id',
+        back_populates='receiver'
+    )
+
+
