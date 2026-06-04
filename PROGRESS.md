@@ -240,3 +240,15 @@ Likes
 Messages
 ├── Send
 └── Retrieve conversation
+
+
+a basic dm model is now implemented. before converting the model  to conversation or chat points ,
+let me create a Feed system , suppose
+
+user1 follows -> user2 and user3
+
+say :
+1. user3 posted -> postA , postB
+2. user2 posted -> postC
+
+then GET FEED  (when logged in as user 1) route must return post A,B and C , sorted by newest first

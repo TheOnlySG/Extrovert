@@ -6,6 +6,7 @@ from app.api.routes.comment import router as comment_router
 from app.api.routes.like import router as like_router
 from app.api.routes.follow import router as follow_router
 from app.api.routes.message import router as message_router
+from app.api.routes.feed import router as feed_router
 
 from app.db.models.post import Post #why are we importing models who ? we aint using them , so why
 from app.db.models.user import User #its because the models  imported will be used to create table from metadata
@@ -26,9 +27,12 @@ app.include_router(comment_router)
 app.include_router(like_router)
 app.include_router(follow_router)
 app.include_router(message_router)
+app.include_router(feed_router)
+
 
 @app.get('/')
 def home():
     return {
-        "message" : "currently working on backend , so please check redoc for more info !"
+        "message" : "current backend has auth , posts , comments , likes , follow ,dms , feed , thus a complete MVP backend is completed , working on improving responses , you can find all that in swagger and redoc"
+        
     }
