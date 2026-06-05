@@ -252,3 +252,83 @@ say :
 2. user2 posted -> postC
 
 then GET FEED  (when logged in as user 1) route must return post A,B and C , sorted by newest first
+
+
+
+
+alr , the complete backend is implemented.
+now , think like , the user sends a message
+
+POST /message --> fastapi ----storesToPostgres---> response
+
+but the thing is , the message is only shown to user when we ask for it , say when we refresh the site
+something like
+
+A sent a msg to B
+B had the chat open , but cant see the msg
+B refreshes the chat , WALAH the msg appers
+connection close
+
+we dont wantt his . what we want ? the msg must apper without refreshing naturally as in
+all other socialmedia platforms
+
+how can we do that  ? well 1 soln to it is keep passing the request continously. 
+something like
+
+did the user send a msg ? 
+did the user send a msg ?
+did the user send a msg ?
+..
+..
+user sent a msg !
+did the user sent a msg ?
+did the user sent a msg ? .. so on
+
+this is called **pooling**. 
+GET /messages/3
+GET /messages/3
+GET /messages/3
+GET /messages/3
+
+but thats just wastefull.
+
+the websockets comes in , so what exactly it does ?
+both users open a permanent connection.
+not like **request -> response -> close connection**
+but **connect -> stay connected -> keep chatting**
+
+now comes some new concepts
+
+# 1. connection manager
+
+the server must remember who was connected.
+example , user 1 : connected
+user 2 : connected
+user 3 : connected
+
+server keeps a json like response of it
+
+this is called a connection manager
+UPDATE : 
+User 1
+  │
+
+WebSocket
+  │
+
+websocket_endpoint
+  │
+
+ConnectionManager
+  │
+
+active_connections
+{
+  1: websocket1,
+  3: websocket3
+}
+  │
+
+User 3
+I BUILT THIS RN , we still have to connect it with messages as the current ws is independent
+and not connected to db , so it disappers when connection closes.

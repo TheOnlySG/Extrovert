@@ -8,6 +8,7 @@ from app.api.routes.follow import router as follow_router
 from app.api.routes.message import router as message_router
 from app.api.routes.feed import router as feed_router
 from app.api.routes.conversation import router as conversation_router
+from app.api.routes.websocket import router as websocket_router
 
 from app.db.models.post import Post #why are we importing models who ? we aint using them , so why
 from app.db.models.user import User #its because the models  imported will be used to create table from metadata
@@ -31,6 +32,8 @@ app.include_router(follow_router)
 app.include_router(message_router)
 app.include_router(feed_router)
 app.include_router(conversation_router)
+
+app.include_router(websocket_router)
 
 
 @app.get('/')
