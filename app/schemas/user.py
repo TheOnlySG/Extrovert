@@ -59,6 +59,35 @@ class UserResponse(BaseModel):
     '''
 
 
+
+
+class UserUpdate(BaseModel):
+    bio : str | None = None
+    profile_picture_url : str | None = None
+    github_url : str | None = None
+    linkedin_url : str | None = None
+    #well the None | None means if field is ommited , done update it
+
+class UserProfile(BaseModel):
+
+    model_config = {
+        'from_attributes':True
+    }
+
+    id : int
+    username : str
+    bio : str | None
+    profile_picture_url : str | None
+    email : EmailStr
+    github_url : str | None
+    linkedin_url : str | None
+    created_at : datetime
+    followers_count : int
+    following_count : int
+
+
+
+
 #lets handle userlogin now
 
 class UserLogin(BaseModel):

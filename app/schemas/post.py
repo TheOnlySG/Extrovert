@@ -5,6 +5,7 @@ from app.schemas.user import UserMini
 
 class PostCreate(BaseModel):
     content  : str #as while creating , user will ofc only send content
+    image_url : str | None
 
 
 class PostResponse(BaseModel):
@@ -16,6 +17,7 @@ class PostResponse(BaseModel):
 
     id : int
     content : str
+    image_url : str | None
     created_at : datetime
     author : UserMini
     likes_count : int

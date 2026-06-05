@@ -17,6 +17,7 @@ def create_post(
 ):
     new_post = Post(
         content = post.content,
+        image_url=post.image_url,
         user_id = current_user.id
     )
 
@@ -75,6 +76,7 @@ def update_post(
             detail="you cannot update another user's post"
         )
     current_post.content = updated_post.content
+    current_post.image_url = updated_post.image_url
     db.commit()
     db.refresh(current_post)
     

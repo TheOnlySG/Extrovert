@@ -21,6 +21,10 @@ class User(Base):
         DateTime(timezone=True) , #means timezone awared timestamps
         default=lambda:datetime.now(timezone.utc) #get current time from UTC timezone
     )
+    bio = Column(String(300) , nullable=True)
+    profile_picture_url = Column(String , nullable = True)
+    github_url = Column(String , nullable=True)
+    linkedin_url = Column(String , nullable=True)
 
     #a user has many posts , 1 : n relationship
 

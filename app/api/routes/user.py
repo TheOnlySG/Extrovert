@@ -1,7 +1,7 @@
 from fastapi import APIRouter , Depends
 from app.db.database import  get_db
 from app.db.models.user import User
-from app.schemas.user import UserCreate , UserResponse , UserLogin , Token
+from app.schemas.user import UserCreate , UserResponse , UserLogin , Token , UserUpdate , UserProfile
 from sqlalchemy.orm import Session
 
 from fastapi.exceptions import HTTPException
@@ -12,7 +12,7 @@ from app.api.dependencies.auth import get_current_user
 from app.core.security import verify_password
 from app.core.security import hash_password
 
-
+from app.api.dependencies.user import get_user_by_id
 
 # from app.core.security import verify_access_token
 '''
@@ -98,3 +98,38 @@ def me(
     current_user : User = Depends(get_current_user)
 ):
     return current_user
+
+@router.get('/users/{user_id}' , response_model=UserProfile)
+def profile(
+    user_id : int,
+    db : Session = Depends(get_db)
+):
+    received_user = get_user_by_id(user_id , db)
+    return received_user
+
+
+@router.patch('/me' , response_model=UserProfile)
+def update_user(
+    update_data : UserUpdate,
+    db : Session = Depends(get_db),
+    current_user : User = Depends(get_current_user)
+):
+
+    if update_data.bio is not None:
+        current_user.bio = update_data.bio
+
+    if update_data.profile_picture_url is not None:
+        current_user.profile_picture_url = update_data.profile_picture_url
+
+    if update_data.github_url is not None:
+        current_user.github_url = update_data.github_url
+
+    if update_data.linkedin_url is not None:
+        current_user.linkedin_url = update_data.linkedin_url
+
+
+    db.commit()
+    db.refresh(current_user)
+
+    return current_user
+    

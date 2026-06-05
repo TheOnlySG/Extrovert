@@ -20,7 +20,7 @@ class Post(Base):
         ForeignKey('users.id'),
         nullable=False
     )
-
+    image_url = Column(String, nullable=True)
     author  =relationship(
         'User',
         back_populates='posts'
