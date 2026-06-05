@@ -13,7 +13,7 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy import or_ , and_
 router = APIRouter()
 
-
+#this route is mostly not used now , as websocket is implemented. but instead of removing it , i prefered keeping it here.
 @router.post('/messages' , response_model=MessageResponse)
 def send_message(
     new_message : MessageCreate,
@@ -41,7 +41,7 @@ def send_message(
     return message
 
 
-
+#this is usefull , the route is stil valid after websockets so ill keep it
 @router.get(
     '/messages/{user_id}',
     response_model=list[MessageResponse]
