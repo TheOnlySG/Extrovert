@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Extrovert</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light py-2 sticky-top">
+        <div class="container">
+            <a class="navbar-brand fs-4 fw-bold" href="feed.html">Extrovert</a>
+            <div class="collapse navbar-collapse d-none d-lg-block" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-3">
+                        <a class="nav-link" href="feed.html">Home</a>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a class="nav-link" href="messages.html">Messages</a>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a class="nav-link active" href="profile.html">My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <button onclick="logout()" class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4 main-content">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-8">
+                
+                <div class="card shadow-sm mb-4">
+
+                    <div class="px-4 pb-4 mt-4">
+                        <div class="d-flex justify-content-between align-items-end mb-3">
+                            <img id="profileAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="profile-card-avatar" style="width: 120px; height: 120px; border-width: 4px;" alt="Avatar">
+                            <div id="profileActionContainer"></div>
+                        </div>
+                        
+                        <h3 id="profileUsername" class="fw-bold mb-1">...</h3>
+                        <p id="profileBio" class="text-muted mb-3">...</p>
+                        
+                        <div class="d-flex gap-3 mb-3 text-muted small">
+                            <div>
+                                <strong id="followersCount" class="text-dark">0</strong> followers
+                            </div>
+                            <div>
+                                <strong id="followingCount" class="text-dark">0</strong> following
+                            </div>
+                        </div>
+
+                        <div id="socialLinks" class="d-flex gap-2 align-items-center">
+                            <a id="githubLink" href="#" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill px-3 d-none">GitHub</a>
+                            <a id="linkedinLink" href="#" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill px-3 d-none">LinkedIn</a>
+                            <button onclick="logout()" class="btn btn-outline-danger btn-sm rounded-pill px-3 ms-auto d-lg-none">Logout</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-4 shadow-sm mb-4 d-none" id="editProfileFormContainer">
+                    <h5 class="fw-bold mb-3">Edit Profile Info</h5>
+                    <form id="editProfileForm">
+                        <div class="mb-3">
+                            <label for="editBio" class="form-label small fw-bold">Bio</label>
+                            <textarea class="form-control" id="editBio" rows="2" maxlength="300"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editAvatar" class="form-label small fw-bold">Profile Picture URL</label>
+                            <input type="url" class="form-control" id="editAvatar">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editGithub" class="form-label small fw-bold">GitHub URL</label>
+                                <input type="url" class="form-control" id="editGithub">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editLinkedin" class="form-label small fw-bold">LinkedIn URL</label>
+                                <input type="url" class="form-control" id="editLinkedin">
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm rounded-pill">Save Changes</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="toggleEditProfile(false)">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <h5 class="fw-bold text-dark mb-3">Publications & Posts</h5>
+                <div id="userPostsList"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar fixed-bottom bg-white border-top d-flex d-lg-none py-2" style="padding-bottom: env(safe-area-inset-bottom);">
+        <div class="container-fluid justify-content-around">
+            <a href="feed.html" class="text-decoration-none text-center text-muted w-25">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
+                  <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4z"/>
+                </svg>
+                <div class="small mt-1" style="font-size: 0.7rem;">Home</div>
+            </a>
+            <a href="messages.html" class="text-decoration-none text-center text-muted w-25">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chat-dots" viewBox="0 0 16 16">
+                  <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                  <path d="M2.167 8c0-.73.61-1.34 1.333-1.34H12.5c.723 0 1.333.61 1.333 1.34c0 .73-.61 1.34-1.333 1.34H3.5c-.724 0-1.333-.61-1.333-1.34M0 8c0 3.31 3.582 6 8 6a9 9 0 0 0 2.347-.306c.52.263 1.639.742 3.468 1.105C15.64 14.37 16 12.76 16 11c0-3.31-3.582-6-8-6S0 4.69 0 8"/>
+                </svg>
+                <div class="small mt-1" style="font-size: 0.7rem;">Messages</div>
+            </a>
+            <a href="profile.html" class="text-decoration-none text-center text-primary w-25">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                  <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                </svg>
+                <div class="small mt-1" style="font-size: 0.7rem;">Profile</div>
+            </a>
+        </div>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        checkAuthOrRedirect();
+
+        let currentUser = null;
+        let targetUser = null;
+        let targetUserId = null;
+        let isFollowing = false;
+
+        async function initProfile() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const rawId = urlParams.get('id');
+            
+            try {
+                const meRes = await fetch(`${API_URL}/me`, {
+                    headers: getAuthHeaders()
+                });
+                if (meRes.ok) {
+                    currentUser = await meRes.json();
+                    targetUserId = rawId ? parseInt(rawId) : currentUser.id;
+                    
+                    const profileRes = await fetch(`${API_URL}/users/${targetUserId}`, {
+                        headers: getAuthHeaders()
+                    });
+                    if (profileRes.ok) {
+                        targetUser = await profileRes.json();
+                        renderProfile();
+                        loadUserPosts();
+                    } else {
+                        document.querySelector('.main-content').innerHTML = '<div class="alert alert-danger text-center my-5">Profile not found.</div>';
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function renderProfile() {
+            const isMe = targetUserId === currentUser.id;
+            
+            document.getElementById('profileUsername').textContent = targetUser.username;
+            document.getElementById('profileBio').textContent = targetUser.bio || 'No bio specified';
+            document.getElementById('followersCount').textContent = targetUser.followers_count;
+            document.getElementById('followingCount').textContent = targetUser.following_count;
+            
+            if (targetUser.profile_picture_url) {
+                document.getElementById('profileAvatar').src = targetUser.profile_picture_url;
+            }
+
+            if (targetUser.github_url) {
+                const link = document.getElementById('githubLink');
+                link.href = targetUser.github_url;
+                link.classList.remove('d-none');
+            }
+            if (targetUser.linkedin_url) {
+                const link = document.getElementById('linkedinLink');
+                link.href = targetUser.linkedin_url;
+                link.classList.remove('d-none');
+            }
+
+            const actionContainer = document.getElementById('profileActionContainer');
+            actionContainer.innerHTML = '';
+            
+            if (isMe) {
+                actionContainer.innerHTML = `
+                    <button class="btn btn-outline-primary btn-sm rounded-pill" onclick="toggleEditProfile(true)">Edit Profile</button>
+                `;
+                
+                document.getElementById('editBio').value = targetUser.bio || '';
+                document.getElementById('editAvatar').value = targetUser.profile_picture_url || '';
+                document.getElementById('editGithub').value = targetUser.github_url || '';
+                document.getElementById('editLinkedin').value = targetUser.linkedin_url || '';
+            } else {
+                checkFollowingState().then(() => {
+                    actionContainer.innerHTML = `
+                        <button id="followBtn" class="btn ${isFollowing ? 'btn-outline-primary' : 'btn-primary'} btn-sm rounded-pill me-2" onclick="toggleFollow()">${isFollowing ? 'Unfollow' : 'Follow'}</button>
+                        <a href="messages.html?id=${targetUser.id}" class="btn btn-outline-secondary btn-sm rounded-pill">Message</a>
+                    `;
+                });
+            }
+        }
+
+        async function checkFollowingState() {
+            try {
+                const response = await fetch(`${API_URL}/users/${targetUserId}/follow`, {
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    isFollowing = data.following;
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function toggleEditProfile(show) {
+            const container = document.getElementById('editProfileFormContainer');
+            if (show) {
+                container.classList.remove('d-none');
+            } else {
+                container.classList.add('d-none');
+            }
+        }
+
+        document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const bio = document.getElementById('editBio').value.trim();
+            const profile_picture_url = document.getElementById('editAvatar').value.trim() || null;
+            const github_url = document.getElementById('editGithub').value.trim() || null;
+            const linkedin_url = document.getElementById('editLinkedin').value.trim() || null;
+
+            try {
+                const response = await fetch(`${API_URL}/me`, {
+                    method: 'PATCH',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ bio, profile_picture_url, github_url, linkedin_url })
+                });
+                
+                if (response.ok) {
+                    toggleEditProfile(false);
+                    initProfile();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
+
+        async function toggleFollow() {
+            try {
+                const response = await fetch(`${API_URL}/users/${targetUserId}/follow`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    isFollowing = data.following;
+                    
+                    const followBtn = document.getElementById('followBtn');
+                    const followersSpan = document.getElementById('followersCount');
+                    
+                    let currentCount = parseInt(followersSpan.textContent);
+                    
+                    if (isFollowing) {
+                        followBtn.textContent = 'Unfollow';
+                        followBtn.className = 'btn btn-outline-primary btn-sm rounded-pill me-2';
+                        followersSpan.textContent = currentCount + 1;
+                    } else {
+                        followBtn.textContent = 'Follow';
+                        followBtn.className = 'btn btn-primary btn-sm rounded-pill me-2';
+                        followersSpan.textContent = Math.max(0, currentCount - 1);
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function loadUserPosts() {
+            const list = document.getElementById('userPostsList');
+            list.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/posts`, {
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    const allPosts = await response.json();
+                    const filteredPosts = allPosts.filter(p => p.author && p.author.id === targetUserId);
+                    
+                    list.innerHTML = '';
+                    if (filteredPosts.length === 0) {
+                        list.innerHTML = '<div class="card p-4 text-center text-muted">No posts published by this user.</div>';
+                        return;
+                    }
+                    
+                    filteredPosts.forEach(post => {
+                        const card = document.createElement('div');
+                        card.className = 'card p-3 shadow-sm';
+                        
+                        const imageTag = post.image_url ? `<img src="${post.image_url}" class="img-fluid rounded mb-3 w-100" style="max-height: 300px; object-fit: cover;">` : '';
+                        
+                        card.innerHTML = `
+                            <div class="d-flex align-items-center mb-2">
+                                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2" width="32" height="32" alt="Avatar">
+                                <div>
+                                    <h6 class="fw-bold mb-0">${post.author.username}</h6>
+                                    <span class="text-muted small">${formatDate(post.created_at)}</span>
+                                </div>
+                            </div>
+                            <p class="text-dark mb-2" style="white-space: pre-wrap;">${post.content}</p>
+                            ${imageTag}
+                            <div class="d-flex border-top pt-2 mt-2 text-muted small">
+                                <span class="me-3">👍 ${post.likes_count} Likes</span>
+                                <span>💬 ${post.comments_count} Comments</span>
+                            </div>
+                        `;
+                        list.appendChild(card);
+                    });
+                }
+            } catch (error) {
+                list.innerHTML = '<div class="text-danger text-center">Failed to load posts.</div>';
+            }
+        }
+
+        initProfile();
+    </script>
+</body>
+</html>

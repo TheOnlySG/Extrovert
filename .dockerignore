@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+.git/
+.env
+*.pyc
+PROGRESS.md
+do.md

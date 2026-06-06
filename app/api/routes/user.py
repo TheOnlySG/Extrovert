@@ -152,4 +152,20 @@ def update_user(
     db.refresh(current_user)
 
     return current_user
+
+
+@router.get('/users', response_model=list[UserResponse])
+def get_all_users(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return db.query(User).all()
+
+
+@router.get('/users/me/followers', response_model=list[UserResponse])
+def get_my_followers(
+    current_user: User = Depends(get_current_user)
+):
+    return [follow.follower for follow in current_user.followers]
+
     

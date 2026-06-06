@@ -10,6 +10,23 @@ from fastapi.exceptions import HTTPException
 
 router = APIRouter()
 
+@router.get('/users/{user_id}/follow')
+def check_follow_status(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    target = db.query(User).filter(User.id == user_id).first()
+    if not target:
+        raise HTTPException(status_code=404, detail='user not found')
+
+    existing = db.query(Follow).filter(
+        Follow.follower_id == current_user.id,
+        Follow.following_id == user_id
+    ).first()
+
+    return {'following': existing is not None}
+
 @router.post('/users/{user_id}/follow' , response_model=FollowResponse)
 def toggle_follow(
     user_id  : int,

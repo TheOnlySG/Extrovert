@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - Extrovert</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light py-2 sticky-top">
+        <div class="container">
+            <a class="navbar-brand fs-4 fw-bold" href="feed.html">Extrovert</a>
+            <div class="collapse navbar-collapse d-none d-lg-block" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-3">
+                        <a class="nav-link" href="feed.html">Home</a>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a class="nav-link active" href="messages.html">Messages</a>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a class="nav-link" href="profile.html">My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <button onclick="logout()" class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-0 py-md-3 px-0 px-md-3 main-content h-100">
+        <div class="container px-0 px-md-3 h-100">
+            <div class="row g-0 card chat-container flex-row overflow-hidden shadow-none shadow-md-sm border-0 border-md rounded-0 rounded-md">
+                
+                <div class="col-md-4 d-flex flex-column h-100 conversation-list bg-white border-end border-light" id="conversationsSidebar">
+                    <div class="p-3 border-bottom">
+                        <h5 class="fw-bold mb-2">Contacts</h5>
+                        <input type="text" class="form-control form-control-sm rounded-pill bg-light border-0" id="searchContactsInput" placeholder="Search contacts..." oninput="filterContacts(this.value)">
+                    </div>
+                    <div class="flex-grow-1 overflow-y-auto p-2" id="contactsSidebar">
+                        <h6 class="text-muted small fw-bold px-2 mt-2 mb-2 text-uppercase">Your Network (Followers)</h6>
+                        <div id="followersContainer"></div>
+                        
+                        <div class="px-3 py-2 text-center text-muted small border-top border-bottom my-3 bg-light rounded" style="font-size: 0.8rem;">
+                            Expand your network
+                        </div>
+                        
+                        <h6 class="text-muted small fw-bold px-2 mt-2 mb-2 text-uppercase">Other Users</h6>
+                        <div id="otherUsersContainer"></div>
+                    </div>
+                </div>
+
+                <div class="col-md-8 flex-column h-100 bg-light d-none d-md-flex" id="chatArea">
+                    
+                    <div id="chatHeader" class="p-3 bg-white border-bottom d-none align-items-center">
+                        <button class="btn btn-link text-dark d-md-none p-0 me-2" onclick="showMobileList()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                            </svg>
+                        </button>
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2" width="40" height="40" alt="Avatar">
+                        <div>
+                            <h6 id="activeChatUsername" class="fw-bold mb-0">...</h6>
+                        </div>
+                    </div>
+
+                    <div id="chatMessages" class="flex-grow-1 p-3 overflow-y-auto d-flex flex-column">
+                        <div class="m-auto text-muted text-center" id="noChatPlaceholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-chat-dots text-muted mb-3" viewBox="0 0 16 16">
+                                <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                <path d="M2.167 8c0-.73.61-1.34 1.333-1.34H12.5c.723 0 1.333.61 1.333 1.34c0 .73-.61 1.34-1.333 1.34H3.5c-.724 0-1.333-.61-1.333-1.34M0 8c0 3.31 3.582 6 8 6a9 9 0 0 0 2.347-.306c.52.263 1.639.742 3.468 1.105C15.64 14.37 16 12.76 16 11c0-3.31-3.582-6-8-6S0 4.69 0 8"/>
+                            </svg>
+                            <h5>Your Inbox</h5>
+                            <p class="small text-muted">Select a contact to start messaging in real-time.</p>
+                        </div>
+                    </div>
+
+                    <div id="chatInputArea" class="p-3 bg-white border-top d-none">
+                        <form id="sendMessageForm" class="d-flex gap-2">
+                            <input type="text" class="form-control" id="messageInput" placeholder="Write a message..." autocomplete="off" required>
+                            <button type="submit" class="btn btn-primary px-4">Send</button>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar fixed-bottom bg-white border-top d-flex d-lg-none py-2" style="padding-bottom: env(safe-area-inset-bottom);">
+        <div class="container-fluid justify-content-around">
+            <a href="feed.html" class="text-decoration-none text-center text-muted w-25">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
+                  <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4z"/>
+                </svg>
+                <div class="small mt-1" style="font-size: 0.7rem;">Home</div>
+            </a>
+            <a href="messages.html" class="text-decoration-none text-center text-primary w-25">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
+                  <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+                </svg>
+                <div class="small mt-1" style="font-size: 0.7rem;">Messages</div>
+            </a>
+            <a href="profile.html" class="text-decoration-none text-center text-muted w-25">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                </svg>
+                <div class="small mt-1" style="font-size: 0.7rem;">Profile</div>
+            </a>
+        </div>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        checkAuthOrRedirect();
+
+        function showMobileChat() {
+            if (window.innerWidth < 768) {
+                document.getElementById('conversationsSidebar').classList.add('d-none');
+                document.getElementById('chatArea').classList.remove('d-none');
+                document.getElementById('chatArea').classList.add('d-flex');
+            }
+        }
+        
+        function showMobileList() {
+            if (window.innerWidth < 768) {
+                document.getElementById('conversationsSidebar').classList.remove('d-none');
+                document.getElementById('chatArea').classList.add('d-none');
+                document.getElementById('chatArea').classList.remove('d-flex');
+            }
+        }
+
+        let socket = null;
+        let activeUserId = null;
+        let currentUser = null;
+        let conversationsList = [];
+
+        async function getCurrentUser() {
+            try {
+                const response = await fetch(`${API_URL}/me`, {
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    currentUser = await response.json();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function initWebSocket() {
+            const token = getToken();
+            const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+            const wsUrl = `${wsScheme}${window.location.host}/ws?token=${token}`;
+            
+            socket = new WebSocket(wsUrl);
+            
+            socket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                handleIncomingMessage(data);
+            };
+
+            socket.onclose = function() {
+                setTimeout(initWebSocket, 3000);
+            };
+        }
+
+        function handleIncomingMessage(msg) {
+            if (activeUserId && (msg.sender_id === activeUserId || msg.receiver_id === activeUserId)) {
+                appendMessage(msg);
+                scrollToBottom();
+            }
+        }
+
+        async function loadContacts() {
+            try {
+                const [usersRes, followersRes] = await Promise.all([
+                    fetch(`${API_URL}/users`, { headers: getAuthHeaders() }),
+                    fetch(`${API_URL}/users/me/followers`, { headers: getAuthHeaders() })
+                ]);
+                
+                if (usersRes.ok && followersRes.ok) {
+                    const allUsers = await usersRes.json();
+                    const followersList = await followersRes.json();
+                    
+                    const followerIds = new Set(followersList.map(f => f.id));
+                    const otherUsers = allUsers.filter(u => u.id !== currentUser.id && !followerIds.has(u.id));
+                    
+                    // Build global list for lookups
+                    conversationsList = [...followersList, ...otherUsers];
+                    cachedFollowers = followersList;
+                    cachedOthers = otherUsers;
+                    
+                    renderContacts(followersList, otherUsers);
+                    
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const targetId = parseInt(urlParams.get('id'));
+                    if (targetId && !activeUserId) {
+                        selectConversation(targetId);
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function createContactItem(user) {
+            const item = document.createElement('div');
+            item.id = `contact-item-${user.id}`;
+            item.className = `conversation-item p-2 mb-1 rounded d-flex align-items-center ${activeUserId === user.id ? 'active bg-primary text-white' : 'hover-bg-light'}`;
+            item.style.cursor = 'pointer';
+            item.onclick = () => selectConversation(user.id);
+            item.innerHTML = `
+                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-3 bg-white" width="36" height="36" alt="Avatar">
+                <div class="flex-grow-1 min-w-0">
+                    <h6 class="fw-bold mb-0 text-truncate" style="font-size: 0.9rem;">${user.username}</h6>
+                    <span class="${activeUserId === user.id ? 'text-white-50' : 'text-muted'} small text-truncate d-block" style="font-size: 0.75rem;">Click to message</span>
+                </div>
+            `;
+            return item;
+        }
+
+        let cachedFollowers = [];
+        let cachedOthers = [];
+
+        function renderContacts(followers, others) {
+            const followersContainer = document.getElementById('followersContainer');
+            const othersContainer = document.getElementById('otherUsersContainer');
+            
+            followersContainer.innerHTML = '';
+            othersContainer.innerHTML = '';
+            
+            if (followers.length === 0) {
+                followersContainer.innerHTML = '<p class="text-muted small px-2">No followers found.</p>';
+            } else {
+                followers.forEach(user => {
+                    followersContainer.appendChild(createContactItem(user));
+                });
+            }
+            
+            if (others.length === 0) {
+                othersContainer.innerHTML = '<p class="text-muted small px-2">No other users found.</p>';
+            } else {
+                others.forEach(user => {
+                    othersContainer.appendChild(createContactItem(user));
+                });
+            }
+        }
+
+        function filterContacts(query) {
+            const lowerQuery = query.toLowerCase();
+            const filteredFollowers = cachedFollowers.filter(u => u.username.toLowerCase().includes(lowerQuery));
+            const filteredOthers = cachedOthers.filter(u => u.username.toLowerCase().includes(lowerQuery));
+            renderContacts(filteredFollowers, filteredOthers);
+        }
+
+        async function selectConversation(userId) {
+            activeUserId = userId;
+            const targetUser = conversationsList.find(u => u.id === userId);
+            
+            const placeholder = document.getElementById('noChatPlaceholder');
+            if (placeholder) placeholder.classList.add('d-none');
+            
+            const chatHeader = document.getElementById('chatHeader');
+            if (chatHeader && chatHeader.classList.contains('d-none')) {
+                chatHeader.classList.replace('d-none', 'd-flex');
+            }
+            document.getElementById('chatInputArea').classList.remove('d-none');
+            showMobileChat();
+            
+            if (targetUser) {
+                document.getElementById('activeChatUsername').textContent = targetUser.username;
+            } else {
+                // Fetch target user if not in list
+                try {
+                    const userRes = await fetch(`${API_URL}/users/${userId}`, { headers: getAuthHeaders() });
+                    if (userRes.ok) {
+                        const tu = await userRes.json();
+                        document.getElementById('activeChatUsername').textContent = tu.username;
+                        conversationsList.push(tu);
+                    }
+                } catch(e) {}
+            }
+
+            // Update active styling in DOM
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active', 'bg-primary', 'text-white');
+                item.classList.add('hover-bg-light');
+                const span = item.querySelector('span');
+                if (span) span.className = 'text-muted small text-truncate d-block';
+            });
+            
+            const activeItem = document.getElementById(`contact-item-${userId}`);
+            if (activeItem) {
+                activeItem.classList.remove('hover-bg-light');
+                activeItem.classList.add('active', 'bg-primary', 'text-white');
+                const span = activeItem.querySelector('span');
+                if (span) span.className = 'text-white-50 small text-truncate d-block';
+            }
+
+            loadMessages(userId);
+        }
+
+        async function loadMessages(userId) {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/messages/${userId}`, {
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    const messages = await response.json();
+                    chatMessages.innerHTML = '';
+                    if (messages.length === 0) {
+                        chatMessages.innerHTML = '<div class="text-center text-muted my-auto">No messages yet. Start the conversation!</div>';
+                        return;
+                    }
+                    messages.forEach(msg => {
+                        appendMessage(msg);
+                    });
+                    scrollToBottom();
+                }
+            } catch (error) {
+                chatMessages.innerHTML = '<div class="text-center text-danger my-auto">Failed to load message history.</div>';
+            }
+        }
+
+        function appendMessage(msg) {
+            const chatMessages = document.getElementById('chatMessages');
+            
+            const placeholder = document.getElementById('noChatPlaceholder');
+            if (placeholder) {
+                placeholder.classList.add('d-none');
+            }
+            if (chatMessages.querySelector('.text-muted.my-auto')) {
+                chatMessages.innerHTML = '';
+            }
+
+            const item = document.createElement('div');
+            const isMe = msg.sender_id === currentUser.id;
+            
+            item.className = `message-bubble ${isMe ? 'message-sent align-self-end' : 'message-received align-self-start'}`;
+            item.innerHTML = `
+                <div class="mb-0">${msg.content}</div>
+                <div class="text-end" style="font-size: 0.65rem; opacity: 0.7;">
+                    ${formatDate(msg.created_at || new Date())}
+                </div>
+            `;
+            chatMessages.appendChild(item);
+        }
+
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        document.getElementById('sendMessageForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('messageInput');
+            const content = input.value.trim();
+            if (!content || !activeUserId || !socket || socket.readyState !== WebSocket.OPEN) return;
+            
+            const payload = {
+                receiver_id: activeUserId,
+                content: content
+            };
+            
+            socket.send(JSON.stringify(payload));
+            
+            appendMessage({
+                sender_id: currentUser.id,
+                receiver_id: activeUserId,
+                content: content,
+                created_at: new Date().toISOString()
+            });
+            
+            input.value = '';
+            scrollToBottom();
+        });
+
+        getCurrentUser().then(() => {
+            initWebSocket();
+            loadContacts();
+        });
+    </script>
+</body>
+</html>

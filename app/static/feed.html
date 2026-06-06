@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed - Extrovert</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="icon" href="data:,">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light py-2 sticky-top">
+        <div class="container">
+            <a class="navbar-brand fs-4 fw-bold" href="feed.html">Extrovert</a>
+            <div class="collapse navbar-collapse d-none d-lg-block" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-3">
+                        <a class="nav-link active" href="feed.html">Home</a>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a class="nav-link" href="messages.html">Messages</a>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a class="nav-link" href="profile.html">My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <button onclick="logout()"
+                            class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4 main-content">
+        <div class="row g-4">
+
+            <div class="col-lg-3">
+                <div class="card text-center pb-3 shadow-sm d-none d-lg-block">
+                    <div class="px-3">
+                        <img id="myAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                            class="profile-card-avatar" alt="Avatar">
+                        <h5 id="myUsername" class="fw-bold mt-2 mb-0">...</h5>
+                        <p id="myBio" class="text-muted small mb-3">...</p>
+                        <hr class="my-2">
+                        <div class="row text-center my-3">
+                            <div class="col-6 border-end">
+                                <h6 id="myFollowersCount" class="fw-bold mb-0">0</h6>
+                                <span class="text-muted small">Followers</span>
+                            </div>
+                            <div class="col-6">
+                                <h6 id="myFollowingCount" class="fw-bold mb-0">0</h6>
+                                <span class="text-muted small">Following</span>
+                            </div>
+                        </div>
+                        <a href="profile.html" class="btn btn-outline-primary btn-sm w-100 rounded-pill">View
+                            Profile</a>
+                    </div>
+                </div>
+                <div class="card p-3 shadow-sm d-none d-lg-block mt-4">
+                    <div class="card-body p-1">
+                        <h6 class="fw-bold text-dark mb-3">Share an update</h6>
+                        <form id="createPostFormDesktop">
+                            <div class="mb-3">
+                                <textarea class="form-control border-0 bg-light" id="postContentDesktop" rows="3"
+                                    placeholder="What's on your mind?" required></textarea>
+                            </div>
+                            <div class="mb-3 d-none" id="imageInputContainerDesktop">
+                                <input type="url" class="form-control form-control-sm bg-light border-0"
+                                    id="postImageUrlDesktop" placeholder="Image URL">
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button type="button"
+                                    class="btn btn-link text-decoration-none text-muted p-0 small fw-bold"
+                                    id="toggleImageBtnDesktop">Add Image</button>
+                                <button type="submit" class="btn btn-primary btn-sm rounded-pill">Publish Post</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+
+                <div class="card p-3 shadow-sm mb-4 d-block d-lg-none">
+                    <div class="card-body p-1">
+                        <h6 class="fw-bold text-dark mb-3">Share an update</h6>
+                        <form id="createPostForm">
+                            <div class="mb-3">
+                                <textarea class="form-control border-0 bg-light" id="postContent" rows="3"
+                                    placeholder="What's on your mind?" required></textarea>
+                            </div>
+                            <div class="mb-3 d-none" id="imageInputContainer">
+                                <input type="url" class="form-control form-control-sm bg-light border-0"
+                                    id="postImageUrl" placeholder="Image URL">
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button type="button"
+                                    class="btn btn-link text-decoration-none text-muted p-0 small fw-bold"
+                                    id="toggleImageBtn">Add Image</button>
+                                <button type="submit" class="btn btn-primary btn-sm rounded-pill">Publish Post</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0">Activity Feed</h5>
+                    <div class="btn-group btn-group-sm">
+                        <button id="btnFollowingFeed" class="btn btn-outline-primary active"
+                            onclick="switchFeed('following')">Following</button>
+                        <button id="btnGlobalFeed" class="btn btn-outline-primary"
+                            onclick="switchFeed('global')">Global</button>
+                    </div>
+                </div>
+
+                <div id="postsList"></div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card p-3 shadow-sm mb-4">
+                    <h6 class="fw-bold text-dark mb-3">Discover Profiles</h6>
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-control-sm rounded-pill bg-light border-0" id="searchUserInput" placeholder="Search users..." oninput="updateSuggestions(this.value)">
+                    </div>
+                    <div id="suggestedUsersList" class="d-flex flex-column gap-3"></div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <nav class="navbar fixed-bottom bg-white border-top d-flex d-lg-none py-2" style="padding-bottom: env(safe-area-inset-bottom);">
+        <div class="container-fluid justify-content-around">
+            <a href="feed.html" class="text-decoration-none text-center text-primary w-25">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                  <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
+                </svg>
+                <div class="small mt-1" style="font-size: 0.7rem;">Home</div>
+            </a>
+            <a href="messages.html" class="text-decoration-none text-center text-muted w-25">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chat-dots" viewBox="0 0 16 16">
+                  <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                  <path d="M2.167 8c0-.73.61-1.34 1.333-1.34H12.5c.723 0 1.333.61 1.333 1.34c0 .73-.61 1.34-1.333 1.34H3.5c-.724 0-1.333-.61-1.333-1.34M0 8c0 3.31 3.582 6 8 6a9 9 0 0 0 2.347-.306c.52.263 1.639.742 3.468 1.105C15.64 14.37 16 12.76 16 11c0-3.31-3.582-6-8-6S0 4.69 0 8"/>
+                </svg>
+                <div class="small mt-1" style="font-size: 0.7rem;">Messages</div>
+            </a>
+            <a href="profile.html" class="text-decoration-none text-center text-muted w-25">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                </svg>
+                <div class="small mt-1" style="font-size: 0.7rem;">Profile</div>
+            </a>
+        </div>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        checkAuthOrRedirect();
+
+        let currentUser = null;
+        let activeFeedType = 'following';
+        const discoveredUsersMap = new Map();
+
+        async function loadProfileSidebar() {
+            try {
+                const response = await fetch(`${API_URL}/me`, {
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    currentUser = await response.json();
+                    document.getElementById('myUsername').textContent = currentUser.username;
+
+                    const profileRes = await fetch(`${API_URL}/users/${currentUser.id}`, {
+                        headers: getAuthHeaders()
+                    });
+                    if (profileRes.ok) {
+                        const fullProfile = await profileRes.json();
+                        document.getElementById('myBio').textContent = fullProfile.bio || 'No bio yet';
+                        document.getElementById('myFollowersCount').textContent = fullProfile.followers_count;
+                        document.getElementById('myFollowingCount').textContent = fullProfile.following_count;
+                        if (fullProfile.profile_picture_url) {
+                            document.getElementById('myAvatar').src = fullProfile.profile_picture_url;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function createPost(e, source) {
+            e.preventDefault();
+            const suffix = source === 'desktop' ? 'Desktop' : '';
+            const content = document.getElementById(`postContent${suffix}`).value.trim();
+            const imageUrl = document.getElementById(`postImageUrl${suffix}`).value.trim() || null;
+
+            try {
+                const response = await fetch(`${API_URL}/posts`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ content, image_url: imageUrl })
+                });
+
+                if (response.ok) {
+                    document.getElementById(`postContent${suffix}`).value = '';
+                    document.getElementById(`postImageUrl${suffix}`).value = '';
+                    const container = document.getElementById(`imageInputContainer${suffix}`);
+                    if (container) container.classList.add('d-none');
+                    loadFeed();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function loadFeed() {
+            const postsList = document.getElementById('postsList');
+            postsList.innerHTML = `<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>`;
+
+            let url = `${API_URL}/posts`;
+            if (activeFeedType === 'following') {
+                url = `${API_URL}/feed`;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    const posts = await response.json();
+                    renderPosts(posts);
+                } else {
+                    postsList.innerHTML = `<div class="alert alert-warning text-center">Failed to load posts.</div>`;
+                }
+            } catch (error) {
+                postsList.innerHTML = `<div class="alert alert-danger text-center">Failed to connect to API.</div>`;
+            }
+        }
+
+        function switchFeed(type) {
+            activeFeedType = type;
+            if (type === 'following') {
+                document.getElementById('btnFollowingFeed').classList.add('active');
+                document.getElementById('btnGlobalFeed').classList.remove('active');
+            } else {
+                document.getElementById('btnFollowingFeed').classList.remove('active');
+                document.getElementById('btnGlobalFeed').classList.add('active');
+            }
+            loadFeed();
+        }
+
+        function renderPosts(posts) {
+            const postsList = document.getElementById('postsList');
+            if (posts.length === 0) {
+                postsList.innerHTML = `
+                    <div class="card p-4 text-center">
+                        <p class="text-muted mb-0">No posts to display in this feed.</p>
+                        ${activeFeedType === 'following' ? '<button class="btn btn-primary btn-sm rounded-pill mt-3 align-self-center" onclick="switchFeed(\'global\')">Explore Global Feed</button>' : ''}
+                    </div>`;
+                return;
+            }
+
+            postsList.innerHTML = '';
+            posts.forEach(post => {
+                if (post.author && post.author.id !== currentUser.id) {
+                    discoveredUsersMap.set(post.author.id, post.author.username);
+                }
+
+                const card = document.createElement('div');
+                card.className = 'card p-3 shadow-sm';
+                card.id = `post-card-${post.id}`;
+
+                const isMyPost = post.author && post.author.id === currentUser.id;
+                const actionDropdown = isMyPost ? `
+                    <div class="dropdown ms-auto">
+                        <button class="btn btn-link text-muted p-0 text-decoration-none fw-bold" data-bs-toggle="dropdown" aria-expanded="false">
+                            ⋮
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li><button class="dropdown-item small" onclick="startEditPost(${post.id})">Edit Post</button></li>
+                            <li><button class="dropdown-item small text-danger" onclick="deletePost(${post.id})">Delete Post</button></li>
+                        </ul>
+                    </div>` : '';
+
+                card.innerHTML = `
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2" width="40" height="40" alt="Avatar">
+                        <div>
+                            <h6 class="fw-bold mb-0">
+                                <a href="profile.html?id=${post.author.id}" class="text-dark text-decoration-none">${post.author.username}</a>
+                            </h6>
+                            <span class="text-muted small">${formatDate(post.created_at)}</span>
+                        </div>
+                        ${actionDropdown}
+                    </div>
+                    
+                    <div id="post-content-container-${post.id}">
+                        <p class="text-dark mb-3" style="white-space: pre-wrap;" id="post-content-text-${post.id}">${escapeHtml(post.content)}</p>
+                        ${post.image_url ? `<img src="${post.image_url}" id="post-image-${post.id}" class="img-fluid rounded mb-3 w-100" style="max-height: 400px; object-fit: cover;">` : ''}
+                    </div>
+                    
+                    <div class="d-flex border-top border-bottom py-2 mb-3">
+                        <button id="like-btn-${post.id}" class="btn btn-link text-decoration-none text-muted p-0 me-4 fw-bold small" onclick="toggleLike(${post.id})">
+                            <span id="like-icon-${post.id}">👍</span> Like (<span id="likes-count-${post.id}">${post.likes_count}</span>)
+                        </button>
+                        <button class="btn btn-link text-decoration-none text-muted p-0 fw-bold small" onclick="toggleCommentSection(${post.id})">
+                            💬 Comment (<span id="comments-count-${post.id}">${post.comments_count}</span>)
+                        </button>
+                    </div>
+
+                    <div id="comment-section-${post.id}" class="d-none">
+                        <div id="comments-list-${post.id}" class="mb-3 d-flex flex-column gap-2"></div>
+                        <form onsubmit="submitComment(event, ${post.id})" class="d-flex gap-2">
+                            <input type="text" class="form-control form-control-sm" id="comment-input-${post.id}" placeholder="Write a comment..." required>
+                            <button type="submit" class="btn btn-primary btn-sm rounded-pill">Send</button>
+                        </form>
+                    </div>
+                `;
+
+                postsList.appendChild(card);
+            });
+
+            updateSuggestions();
+        }
+
+        async function deletePost(postId) {
+            if (!confirm('Are you sure you want to delete this post?')) return;
+            try {
+                const response = await fetch(`${API_URL}/posts/${postId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    document.getElementById(`post-card-${postId}`).remove();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function toggleLike(postId) {
+            try {
+                const response = await fetch(`${API_URL}/posts/${postId}/likes`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById(`likes-count-${postId}`).textContent = data.likes_count;
+                    const btn = document.getElementById(`like-btn-${postId}`);
+                    if (data.liked) {
+                        btn.classList.add('text-primary');
+                        btn.classList.remove('text-muted');
+                    } else {
+                        btn.classList.remove('text-primary');
+                        btn.classList.add('text-muted');
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function toggleCommentSection(postId) {
+            const section = document.getElementById(`comment-section-${postId}`);
+            if (section.classList.contains('d-none')) {
+                section.classList.remove('d-none');
+                loadComments(postId);
+            } else {
+                section.classList.add('d-none');
+            }
+        }
+
+        async function loadComments(postId) {
+            const list = document.getElementById(`comments-list-${postId}`);
+            list.innerHTML = '<div class="text-center py-2"><div class="spinner-border spinner-border-sm text-primary"></div></div>';
+
+            try {
+                const response = await fetch(`${API_URL}/posts/${postId}/comments`, {
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    const comments = await response.json();
+                    list.innerHTML = '';
+                    if (comments.length === 0) {
+                        list.innerHTML = '<p class="text-muted small mb-0">No comments yet.</p>';
+                        return;
+                    }
+                    comments.forEach(comment => {
+                        const item = document.createElement('div');
+                        item.className = 'bg-light p-2 rounded';
+                        item.id = `comment-item-${comment.id}`;
+
+                        const isMyComment = comment.author && comment.author.id === currentUser.id;
+                        const actionDropdown = isMyComment ? `
+                            <div class="dropdown ms-auto">
+                                <button class="btn btn-link text-muted p-0 text-decoration-none fw-bold" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 0.8rem;">
+                                    ⋮
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="min-width: 120px;">
+                                    <li><button class="dropdown-item" style="font-size: 0.85rem;" onclick="startEditComment(${comment.id}, ${postId})">Edit</button></li>
+                                    <li><button class="dropdown-item text-danger" style="font-size: 0.85rem;" onclick="deleteComment(${comment.id}, ${postId})">Delete</button></li>
+                                </ul>
+                            </div>` : '';
+
+                        item.innerHTML = `
+                            <div class="d-flex align-items-center mb-1">
+                                <span class="fw-bold small me-2">${comment.author.username}</span>
+                                <span class="text-muted" style="font-size: 0.75rem;">${formatDate(comment.created_at)}</span>
+                                ${actionDropdown}
+                            </div>
+                            <div id="comment-content-container-${comment.id}">
+                                <p class="mb-0 small text-dark" style="white-space: pre-wrap;" id="comment-content-text-${comment.id}">${escapeHtml(comment.content)}</p>
+                            </div>
+                        `;
+                        list.appendChild(item);
+                    });
+                }
+            } catch (error) {
+                list.innerHTML = '<p class="text-danger small mb-0">Error loading comments.</p>';
+            }
+        }
+
+        async function submitComment(e, postId) {
+            e.preventDefault();
+            const input = document.getElementById(`comment-input-${postId}`);
+            const content = input.value.trim();
+            if (!content) return;
+
+            try {
+                const response = await fetch(`${API_URL}/comments`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ content, post_id: postId })
+                });
+
+                if (response.ok) {
+                    input.value = '';
+                    loadComments(postId);
+                    const countSpan = document.getElementById(`comments-count-${postId}`);
+                    countSpan.textContent = parseInt(countSpan.textContent) + 1;
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function deleteComment(commentId, postId) {
+            if (!confirm('Delete comment?')) return;
+            try {
+                const response = await fetch(`${API_URL}/comments/${commentId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    document.getElementById(`comment-item-${commentId}`).remove();
+                    const countSpan = document.getElementById(`comments-count-${postId}`);
+                    countSpan.textContent = Math.max(0, parseInt(countSpan.textContent) - 1);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+         let allUsersList = [];
+
+        async function fetchAllUsers() {
+            try {
+                const response = await fetch(`${API_URL}/users`, { headers: getAuthHeaders() });
+                if (response.ok) {
+                    allUsersList = await response.json();
+                    updateSuggestions();
+                }
+            } catch (e) {}
+        }
+
+        function updateSuggestions(query = '') {
+            const list = document.getElementById('suggestedUsersList');
+            list.innerHTML = '';
+            
+            const filtered = allUsersList.filter(u => 
+                u.id !== currentUser.id && 
+                u.username.toLowerCase().includes(query.toLowerCase())
+            ).slice(0, 5);
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<p class="text-muted small">No users found.</p>';
+                return;
+            }
+
+            filtered.forEach(u => {
+                const item = document.createElement('div');
+                item.className = 'd-flex align-items-center justify-content-between';
+                item.innerHTML = `
+                    <div class="d-flex align-items-center min-w-0 flex-grow-1 me-2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2" width="32" height="32" alt="Avatar">
+                        <a href="profile.html?id=${u.id}" class="text-dark text-decoration-none small fw-bold text-truncate">${u.username}</a>
+                    </div>
+                    <a href="profile.html?id=${u.id}" class="btn btn-outline-primary btn-sm px-2 py-0 rounded-pill flex-shrink-0" style="font-size: 0.8rem;">View</a>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function escapeHtml(unsafe) {
+            return (unsafe || '').replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+
+        function unescapeHtml(safe) {
+            return (safe || '').replace(/&amp;/g, "&")
+                 .replace(/&lt;/g, "<")
+                 .replace(/&gt;/g, ">")
+                 .replace(/&quot;/g, "\"")
+                 .replace(/&#039;/g, "'");
+        }
+
+        function startEditPost(postId) {
+            const container = document.getElementById(`post-content-container-${postId}`);
+            const textEl = document.getElementById(`post-content-text-${postId}`);
+            const imgEl = document.getElementById(`post-image-${postId}`);
+            
+            const currentText = textEl ? unescapeHtml(textEl.innerHTML) : '';
+            const currentImgUrl = imgEl ? imgEl.src : '';
+
+            container.innerHTML = `
+                <div class="mb-3">
+                    <textarea class="form-control mb-2 bg-light border-0" id="edit-post-text-${postId}" rows="3">${escapeHtml(currentText)}</textarea>
+                    <input type="url" class="form-control form-control-sm mb-2 bg-light border-0" id="edit-post-img-${postId}" placeholder="Image URL" value="${currentImgUrl}">
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="cancelEditPost(${postId}, \`${escapeHtml(currentText).replace(/`/g, '\\`')}\`, \`${currentImgUrl}\`)">Cancel</button>
+                        <button class="btn btn-primary btn-sm rounded-pill" onclick="saveEditPost(${postId})">Save</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function cancelEditPost(postId, originalTextEscaped, originalImgUrl) {
+            const container = document.getElementById(`post-content-container-${postId}`);
+            container.innerHTML = `
+                <p class="text-dark mb-3" style="white-space: pre-wrap;" id="post-content-text-${postId}">${originalTextEscaped}</p>
+                ${originalImgUrl ? `<img src="${originalImgUrl}" id="post-image-${postId}" class="img-fluid rounded mb-3 w-100" style="max-height: 400px; object-fit: cover;">` : ''}
+            `;
+        }
+
+        async function saveEditPost(postId) {
+            const text = document.getElementById(`edit-post-text-${postId}`).value.trim();
+            const imgUrl = document.getElementById(`edit-post-img-${postId}`).value.trim() || null;
+
+            try {
+                const response = await fetch(`${API_URL}/posts/${postId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ content: text, image_url: imgUrl })
+                });
+                if (response.ok) {
+                    const updatedPost = await response.json();
+                    cancelEditPost(postId, escapeHtml(updatedPost.content), updatedPost.image_url || '');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function startEditComment(commentId, postId) {
+            const container = document.getElementById(`comment-content-container-${commentId}`);
+            const textEl = document.getElementById(`comment-content-text-${commentId}`);
+            const currentText = textEl ? unescapeHtml(textEl.innerHTML) : '';
+
+            container.innerHTML = `
+                <div class="mt-2">
+                    <textarea class="form-control form-control-sm mb-2" id="edit-comment-text-${commentId}" rows="2">${escapeHtml(currentText)}</textarea>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button class="btn btn-link text-muted p-0 text-decoration-none small" onclick="cancelEditComment(${commentId}, \`${escapeHtml(currentText).replace(/`/g, '\\`')}\`)">Cancel</button>
+                        <button class="btn btn-primary btn-sm rounded-pill px-3 py-0" style="font-size: 0.8rem;" onclick="saveEditComment(${commentId}, ${postId})">Save</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function cancelEditComment(commentId, originalTextEscaped) {
+            const container = document.getElementById(`comment-content-container-${commentId}`);
+            container.innerHTML = `<p class="mb-0 small text-dark" style="white-space: pre-wrap;" id="comment-content-text-${commentId}">${originalTextEscaped}</p>`;
+        }
+
+        async function saveEditComment(commentId, postId) {
+            const text = document.getElementById(`edit-comment-text-${commentId}`).value.trim();
+            if (!text) return;
+
+            try {
+                const response = await fetch(`${API_URL}/comments/${commentId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ content: text })
+                });
+                if (response.ok) {
+                    const updatedComment = await response.json();
+                    cancelEditComment(commentId, escapeHtml(updatedComment.content));
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function setupImageToggle(btnId, containerId) {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.addEventListener('click', function () {
+                    const container = document.getElementById(containerId);
+                    container.classList.toggle('d-none');
+                    btn.textContent = container.classList.contains('d-none') ? 'Add Image' : '✕ Remove Image';
+                });
+            }
+        }
+
+        document.getElementById('createPostForm').addEventListener('submit', (e) => createPost(e, 'mobile'));
+        document.getElementById('createPostFormDesktop').addEventListener('submit', (e) => createPost(e, 'desktop'));
+
+        setupImageToggle('toggleImageBtn', 'imageInputContainer');
+        setupImageToggle('toggleImageBtnDesktop', 'imageInputContainerDesktop');
+
+        loadProfileSidebar().then(() => {
+            fetchAllUsers();
+            loadFeed();
+        });
+    </script>
+</body>
+
+</html>

@@ -33,7 +33,7 @@ def create_post(
 def get_all_posts(
     db : Session = Depends(get_db)
 ):
-    posts = db.query(Post).all()
+    posts = db.query(Post).order_by(Post.created_at.desc()).all()
     return posts
 
 

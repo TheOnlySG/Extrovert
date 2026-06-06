@@ -12,5 +12,3 @@ venv/
 .env
 
 *.log
-
-alembic/versions/__pycache__/
