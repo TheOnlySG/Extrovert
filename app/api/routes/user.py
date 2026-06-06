@@ -39,6 +39,26 @@ def user_sign_up(
     # now we already have a validated user (person , which is a pydantic class object btw) and a database session (created from get_db())
     # the Depends() thing fetches and creates the db local session
 
+    email_exists = db.query(User).filter(
+        User.email == person.email
+    ).first()
+    user_exists = db.query(User).filter(
+        User.username == person.username
+    ).first()
+
+    if email_exists:
+        raise HTTPException(
+            status_code=400,
+            detail='You already have an account with this email. please login'
+        )
+    if user_exists:
+        raise HTTPException(
+            status_code=400,
+            detail='Username already taken'
+        )
+
+
+
     new_user = User(
         username = person.username,
         email = person.email,
