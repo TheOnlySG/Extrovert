@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from app.core.config import ENVIRONMENT
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from app.db.database import  engine , Base
@@ -21,7 +22,14 @@ from app.db.models.like import Like
 
 Base.metadata.create_all(bind = engine)
 
-app = FastAPI()
+if  ENVIRONMENT.lower()  == 'production':
+    app = FastAPI(
+        docs_url = None,
+        redoc_url=None,
+        openapi_url=None
+    )
+else :
+    app = FastAPI()
 
 app.include_router(user_router) 
 app.include_router(post_router)
