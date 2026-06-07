@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/Extrovert.gif" alt="Extrovert Banner" width="100%">
+  <img src="assets/Extrovert(1).gif" alt="Extrovert Banner" width="100%">
 </p>
 
 --
