@@ -167,6 +167,25 @@
         let activeFeedType = 'following';
         const discoveredUsersMap = new Map();
 
+        async function getUserProfile(userId) {
+            const cached = discoveredUsersMap.get(userId);
+            if (cached && cached.profile_picture_url !== undefined) return cached;
+            try {
+                const res = await fetch(`${API_URL}/users/${userId}`, { headers: getAuthHeaders() });
+                if (res.ok) {
+                    const profile = await res.json();
+                    const obj = { username: profile.username, profile_picture_url: profile.profile_picture_url };
+                    discoveredUsersMap.set(userId, obj);
+                    return obj;
+                }
+            } catch (e) {
+                console.error('Failed to fetch user profile', e);
+            }
+            const fallback = cached || { username: null, profile_picture_url: null };
+            discoveredUsersMap.set(userId, fallback);
+            return fallback;
+        }
+
         async function loadProfileSidebar() {
             try {
                 const response = await fetch(`${API_URL}/me`, {
@@ -268,8 +287,9 @@
 
             postsList.innerHTML = '';
             posts.forEach(post => {
+                const defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
                 if (post.author && post.author.id !== currentUser.id) {
-                    discoveredUsersMap.set(post.author.id, post.author.username);
+                    discoveredUsersMap.set(post.author.id, { username: post.author.username, profile_picture_url: post.author.profile_picture_url ?? undefined });
                 }
 
                 const card = document.createElement('div');
@@ -290,7 +310,7 @@
 
                 card.innerHTML = `
                     <div class="d-flex align-items-center mb-3">
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2" width="40" height="40" alt="Avatar">
+                        <img src="${post.author && post.author.profile_picture_url ? post.author.profile_picture_url : defaultAvatar}" data-author-id="${post.author ? post.author.id : ''}" class="rounded-circle me-2 post-author-avatar" width="40" height="40" alt="Avatar">
                         <div>
                             <h6 class="fw-bold mb-0">
                                 <a href="profile.html?id=${post.author.id}" class="text-dark text-decoration-none">${post.author.username}</a>
@@ -324,6 +344,17 @@
                 `;
 
                 postsList.appendChild(card);
+
+                // If author profile_picture_url was not included in post payload, fetch it and update avatar
+                if (post.author && !post.author.profile_picture_url) {
+                    (async () => {
+                        const profile = await getUserProfile(post.author.id);
+                        if (profile && profile.profile_picture_url) {
+                            const img = card.querySelector('.post-author-avatar');
+                            if (img) img.src = profile.profile_picture_url;
+                        }
+                    })();
+                }
             });
 
             updateSuggestions();
@@ -494,16 +525,26 @@
             }
 
             filtered.forEach(u => {
+                const defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
                 const item = document.createElement('div');
                 item.className = 'd-flex align-items-center justify-content-between';
                 item.innerHTML = `
                     <div class="d-flex align-items-center min-w-0 flex-grow-1 me-2">
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2" width="32" height="32" alt="Avatar">
+                        <img src="${defaultAvatar}" data-user-id="${u.id}" class="rounded-circle me-2 suggestion-avatar" width="32" height="32" alt="Avatar">
                         <a href="profile.html?id=${u.id}" class="text-dark text-decoration-none small fw-bold text-truncate">${u.username}</a>
                     </div>
                     <a href="profile.html?id=${u.id}" class="btn btn-outline-primary btn-sm px-2 py-0 rounded-pill flex-shrink-0" style="font-size: 0.8rem;">View</a>
                 `;
                 list.appendChild(item);
+
+                // fetch profile picture for suggestion
+                (async () => {
+                    const profile = await getUserProfile(u.id);
+                    if (profile && profile.profile_picture_url) {
+                        const img = list.querySelector(`img.suggestion-avatar[data-user-id="${u.id}"]`);
+                        if (img) img.src = profile.profile_picture_url;
+                    }
+                })();
             });
         }
 

@@ -12,3 +12,6 @@ venv/
 .env
 
 *.log
+
+do.md
+PROGRESS.md

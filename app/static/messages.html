@@ -62,7 +62,7 @@
                                 <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
                             </svg>
                         </button>
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2" width="40" height="40" alt="Avatar">
+                        <img id="chatHeaderAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2" width="40" height="40" alt="Avatar">
                         <div>
                             <h6 id="activeChatUsername" class="fw-bold mb-0">...</h6>
                         </div>
@@ -119,6 +119,27 @@
     <script src="js/auth.js"></script>
     <script>
         checkAuthOrRedirect();
+
+        const discoveredUsersMap = new Map(); // id -> { username, profile_picture_url }
+
+        async function getUserProfile(userId) {
+            const cached = discoveredUsersMap.get(userId);
+            if (cached && cached.profile_picture_url !== undefined) return cached;
+            try {
+                const res = await fetch(`${API_URL}/users/${userId}`, { headers: getAuthHeaders() });
+                if (res.ok) {
+                    const profile = await res.json();
+                    const obj = { username: profile.username, profile_picture_url: profile.profile_picture_url };
+                    discoveredUsersMap.set(userId, obj);
+                    return obj;
+                }
+            } catch (e) {
+                console.error('Failed to fetch user profile', e);
+            }
+            const fallback = cached || { username: null, profile_picture_url: null };
+            discoveredUsersMap.set(userId, fallback);
+            return fallback;
+        }
 
         function showMobileChat() {
             if (window.innerWidth < 768) {
@@ -218,12 +239,21 @@
             item.style.cursor = 'pointer';
             item.onclick = () => selectConversation(user.id);
             item.innerHTML = `
-                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-3 bg-white" width="36" height="36" alt="Avatar">
+                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" data-user-id="${user.id}" class="rounded-circle me-3 bg-white contact-avatar" width="36" height="36" alt="Avatar">
                 <div class="flex-grow-1 min-w-0">
                     <h6 class="fw-bold mb-0 text-truncate" style="font-size: 0.9rem;">${user.username}</h6>
                     <span class="${activeUserId === user.id ? 'text-white-50' : 'text-muted'} small text-truncate d-block" style="font-size: 0.75rem;">Click to message</span>
                 </div>
             `;
+
+            // asynchronously fetch and set contact avatar if available
+            (async () => {
+                const profile = await getUserProfile(user.id);
+                if (profile && profile.profile_picture_url) {
+                    const img = item.querySelector(`img.contact-avatar[data-user-id="${user.id}"]`);
+                    if (img) img.src = profile.profile_picture_url;
+                }
+            })();
             return item;
         }
 
@@ -277,6 +307,12 @@
             
             if (targetUser) {
                 document.getElementById('activeChatUsername').textContent = targetUser.username;
+                // set chat header avatar from cache or fetch
+                (async () => {
+                    const prof = await getUserProfile(userId);
+                    const avatarEl = document.getElementById('chatHeaderAvatar');
+                    if (prof && prof.profile_picture_url && avatarEl) avatarEl.src = prof.profile_picture_url;
+                })();
             } else {
                 // Fetch target user if not in list
                 try {
@@ -284,6 +320,10 @@
                     if (userRes.ok) {
                         const tu = await userRes.json();
                         document.getElementById('activeChatUsername').textContent = tu.username;
+                        if (tu.profile_picture_url) {
+                            const avatarEl = document.getElementById('chatHeaderAvatar');
+                            if (avatarEl) avatarEl.src = tu.profile_picture_url;
+                        }
                         conversationsList.push(tu);
                     }
                 } catch(e) {}
