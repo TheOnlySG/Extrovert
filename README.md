@@ -199,6 +199,14 @@ Windows
 
 <hr>
 
+## Database Schema
+
+<p align="center">
+  <img src="assets/Extrovert(1).png" width="100%">
+</p>
+
+<hr>
+
 <h2>Project Goals</h2>
 
 <ul>
